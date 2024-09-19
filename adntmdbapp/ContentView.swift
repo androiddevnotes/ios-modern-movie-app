@@ -9,16 +9,8 @@ struct ContentView: View {
             List {
                 ForEach(networkManager.movies) { movie in
                     HStack {
-                        if let posterPath = movie.posterPath {
-                            AsyncImage(url: URL(string: "\(Constants.Image.baseURL)\(posterPath)")) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 100)
-                            } placeholder: {
-                                ProgressView()
-                            }
-                        }
+                        networkManager.posterImage(for: movie)
+                            .frame(width: 100, height: 150)
                         VStack(alignment: .leading) {
                             Text(movie.title)
                                 .font(.headline)

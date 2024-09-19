@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 class NetworkManager: ObservableObject {
     @Published var movies: [Movie] = []
@@ -15,6 +16,7 @@ class NetworkManager: ObservableObject {
     }
 
     private let baseURL = Constants.API.baseURL
+    private let imageBaseURL = Constants.Image.baseURL
 
     func fetchPopularMovies() {
         guard currentPage <= totalPages else { return }
@@ -34,5 +36,30 @@ class NetworkManager: ObservableObject {
                 }
             }
         }.resume()
+    }
+
+    func posterImage(for movie: Movie) -> some View {
+        Group {
+            if let posterPath = movie.posterPath {
+                AsyncImage(url: URL(string: "\(imageBaseURL)\(posterPath)")) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    case .failure:
+                        Image(systemName: "photo")
+                            .foregroundColor(.gray)
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+            } else {
+                Image(systemName: "photo")
+                    .foregroundColor(.gray)
+            }
+        }
     }
 }
