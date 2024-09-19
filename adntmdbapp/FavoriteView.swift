@@ -2,7 +2,6 @@ import SwiftUI
 
 struct FavoriteView: View {
   @ObservedObject var favoritesManager: FavoritesManager
-  @EnvironmentObject var themeManager: ThemeManager
 
   var body: some View {
     ScrollView {

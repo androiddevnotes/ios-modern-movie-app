@@ -30,7 +30,6 @@ struct Movie: Identifiable, Codable {
     rating = try container.decode(Double.self, forKey: .rating)
     releaseDate = try container.decode(String.self, forKey: .releaseDate)
 
-    // Decode genre_ids as [Int] and convert to [String]
     let genreIds = try container.decodeIfPresent([Int].self, forKey: .genres) ?? []
     genres = genreIds.map { String($0) }
 

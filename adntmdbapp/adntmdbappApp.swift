@@ -13,7 +13,7 @@ struct adntmdbappApp: App {
     WindowGroup {
       ContentView()
         .environmentObject(themeManager)
-      // Remove the explicit preferredColorScheme setting
+
     }
   }
 }

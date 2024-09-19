@@ -3,7 +3,6 @@ import SwiftUI
 struct SortView: View {
   @ObservedObject var networkManager: NetworkManager
   @Binding var isPresented: Bool
-  // Remove @EnvironmentObject var themeManager: ThemeManager
 
   var body: some View {
     NavigationView {
@@ -31,6 +30,6 @@ struct SortView: View {
         })
     }
     .accentColor(Constants.Colors.primary)
-    // Remove .background(themeManager.selectedTheme == .dark ? Color.black : Color.white)
+
   }
 }
