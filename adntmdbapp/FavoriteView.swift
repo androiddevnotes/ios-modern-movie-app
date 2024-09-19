@@ -5,24 +5,38 @@ struct FavoriteView: View {
   @EnvironmentObject var themeManager: ThemeManager
 
   var body: some View {
-    List {
-      ForEach(networkManager.favoriteMovies) { movie in
-        NavigationLink(
-          destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
-        ) {
-          MovieRowView(movie: movie, networkManager: networkManager)
+    ScrollView {
+      LazyVStack(spacing: 16) {
+        ForEach(networkManager.favoriteMovies) { movie in
+          NavigationLink(
+            destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
+          ) {
+            MovieRowView(movie: movie, networkManager: networkManager)
+          }
+          .buttonStyle(PlainButtonStyle())
         }
       }
-      .onDelete(perform: removeItems)
+      .padding()
     }
+    .background(Color(UIColor.systemBackground))
     .navigationTitle("Favorites")
-    .background(themeManager.selectedTheme == .dark ? Color.black : Color.white)
+    .overlay(emptyStateView)
   }
 
-  func removeItems(at offsets: IndexSet) {
-    for index in offsets {
-      let movie = networkManager.favoriteMovies[index]
-      networkManager.toggleFavorite(for: movie)
+  @ViewBuilder
+  private var emptyStateView: some View {
+    if networkManager.favoriteMovies.isEmpty {
+      VStack(spacing: 16) {
+        Image(systemName: "heart.slash")
+          .font(.system(size: 60))
+          .foregroundColor(.gray)
+        Text("No favorites yet")
+          .font(.title2)
+          .foregroundColor(.gray)
+        Text("Add movies to your favorites list")
+          .font(.subheadline)
+          .foregroundColor(.gray)
+      }
     }
   }
 }

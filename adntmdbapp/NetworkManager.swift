@@ -218,3 +218,11 @@ class NetworkManager: ObservableObject {
     "Western": "37",
   ]
 }
+
+extension NetworkManager {
+  func removeFromFavorites(_ movie: Movie) {
+    favoriteMovies.removeAll { $0.id == movie.id }
+    favoriteIds.remove(movie.id)
+    saveFavorites()
+  }
+}
