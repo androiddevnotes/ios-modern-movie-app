@@ -6,8 +6,10 @@ struct FavoriteView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach($networkManager.movies.filter { $0.isFavorite.wrappedValue }) { $movie in
-                    MovieRowView(movie: $movie, networkManager: networkManager)
+                ForEach($networkManager.favoriteMovies) { $movie in
+                    NavigationLink(destination: MovieDetailView(movie: $movie, networkManager: networkManager)) {
+                        MovieRowView(movie: $movie, networkManager: networkManager)
+                    }
                 }
             }
             .navigationTitle("Favorites")

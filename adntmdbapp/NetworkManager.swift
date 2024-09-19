@@ -3,9 +3,11 @@ import SwiftUI
 
 class NetworkManager: ObservableObject {
     @Published var movies: [Movie] = []
+    @Published var favoriteMovies: [Movie] = []
     @Published var currentCategory: MovieCategory = .popular
     var currentPage = 1
     var totalPages = 1
+    private var favoriteIds: Set<Int> = []
 
     private var apiKey: String {
         if let path = Bundle.main.path(forResource: Constants.Secrets.plistName, ofType: "plist"),
@@ -51,7 +53,15 @@ class NetworkManager: ObservableObject {
                 do {
                     let movieResponse = try JSONDecoder().decode(MovieResponse.self, from: data)
                     DispatchQueue.main.async {
-                        self.movies.append(contentsOf: movieResponse.results)
+                        let newMovies = movieResponse.results.map { movie in
+                            Movie(id: movie.id,
+                                  title: movie.title,
+                                  overview: movie.overview,
+                                  posterPath: movie.posterPath,
+                                  isFavorite: self.favoriteIds.contains(movie.id),
+                                  categoryId: self.currentCategory.rawValue)
+                        }
+                        self.movies.append(contentsOf: newMovies)
                         self.currentPage += 1
                         self.totalPages = movieResponse.totalPages
                     }
@@ -88,13 +98,22 @@ class NetworkManager: ObservableObject {
     }
 
     func toggleFavorite(for movie: Movie) {
+        if favoriteIds.contains(movie.id) {
+            favoriteIds.remove(movie.id)
+            favoriteMovies.removeAll { $0.id == movie.id }
+        } else {
+            favoriteIds.insert(movie.id)
+            favoriteMovies.append(movie)
+        }
+        
         if let index = movies.firstIndex(where: { $0.id == movie.id }) {
             movies[index].isFavorite.toggle()
-            objectWillChange.send()  // Notify observers of the change
         }
+        
+        objectWillChange.send()
     }
 
-    var favoriteMovies: [Movie] {
-        movies.filter { $0.isFavorite }
+    func isFavorite(_ movie: Movie) -> Bool {
+        favoriteIds.contains(movie.id)
     }
 }

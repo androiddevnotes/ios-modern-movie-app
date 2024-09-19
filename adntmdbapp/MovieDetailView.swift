@@ -23,8 +23,8 @@ struct MovieDetailView: View {
                     Button(action: {
                         networkManager.toggleFavorite(for: movie)
                     }) {
-                        Image(systemName: movie.isFavorite ? "heart.fill" : "heart")
-                            .foregroundColor(movie.isFavorite ? .red : .gray)
+                        Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
+                            .foregroundColor(networkManager.isFavorite(movie) ? .red : .gray)
                     }
                 }
                 .padding(.top)
