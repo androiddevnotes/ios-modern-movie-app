@@ -28,9 +28,9 @@ struct MovieListView: View {
 
     var body: some View {
         List {
-            ForEach($networkManager.movies) { $movie in
-                NavigationLink(destination: MovieDetailView(networkManager: networkManager, movie: $movie)) {
-                    MovieRowView(movie: $movie, networkManager: networkManager)
+            ForEach(networkManager.movies) { movie in
+                NavigationLink(destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))) {
+                    MovieRowView(movie: movie, networkManager: networkManager)
                 }
             }
             if networkManager.currentPage <= networkManager.totalPages {
@@ -62,21 +62,30 @@ struct MovieListView: View {
 }
 
 struct MovieRowView: View {
-    @Binding var movie: Movie
+    let movie: Movie
     @ObservedObject var networkManager: NetworkManager
 
     var body: some View {
-        HStack {
+        HStack(spacing: 15) {
             networkManager.posterImage(for: movie)
-                .frame(width: 50, height: 75)
-            VStack(alignment: .leading) {
+                .frame(width: 60, height: 90)
+                .cornerRadius(8)
+            
+            VStack(alignment: .leading, spacing: 5) {
                 Text(movie.title)
                     .font(.headline)
-                Text("Rating: \(String(format: "%.1f", movie.rating))")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+                
+                HStack {
+                    Image(systemName: "star.fill")
+                        .foregroundColor(.yellow)
+                    Text(String(format: "%.1f", movie.rating))
+                        .font(.subheadline)
+                }
             }
+            
             Spacer()
+            
             Button(action: {
                 networkManager.toggleFavorite(for: movie)
             }) {
@@ -85,6 +94,7 @@ struct MovieRowView: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
+        .padding(.vertical, 8)
     }
 }
 
