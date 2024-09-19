@@ -89,7 +89,6 @@ struct MovieDetailView: View {
       .background(Color(UIColor.systemBackground).opacity(0.8))
     }
     .edgesIgnoringSafeArea(.top)
-    .navigationBarTitle(movie.title, displayMode: .inline)
   }
 
   private var favoriteButton: some View {
