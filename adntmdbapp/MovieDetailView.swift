@@ -61,7 +61,6 @@ struct MovieDetailView: View {
           VStack(alignment: .leading, spacing: 15) {
             detailRow(title: Constants.Strings.releaseDate, value: movie.releaseDate)
             detailRow(title: Constants.Strings.genre, value: movie.genres.joined(separator: ", "))
-
           }
           .padding(.horizontal)
         }

@@ -18,7 +18,7 @@ struct Movie: Identifiable, Codable {
     case posterPath = "poster_path"
     case rating = "vote_average"
     case releaseDate = "release_date"
-    case genres = "genre_ids"
+    case genreIds = "genre_ids"
   }
 
   init(from decoder: Decoder) throws {
@@ -30,8 +30,8 @@ struct Movie: Identifiable, Codable {
     rating = try container.decode(Double.self, forKey: .rating)
     releaseDate = try container.decode(String.self, forKey: .releaseDate)
 
-    let genreIds = try container.decodeIfPresent([Int].self, forKey: .genres) ?? []
-    genres = genreIds.map { String($0) }
+    let genreIds = try container.decodeIfPresent([Int].self, forKey: .genreIds) ?? []
+    genres = genreIds.map { String($0) }.compactMap { GenreMapping.idToName[$0] }
 
     isFavorite = false
     categoryId = nil
@@ -60,7 +60,7 @@ struct Movie: Identifiable, Codable {
     try container.encode(posterPath, forKey: .posterPath)
     try container.encode(rating, forKey: .rating)
     try container.encode(releaseDate, forKey: .releaseDate)
-    try container.encode(genres.compactMap { Int($0) }, forKey: .genres)
+    // We don't encode genres back to genre IDs, as we don't need to send this data back to the API
   }
 }
 

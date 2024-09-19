@@ -22,4 +22,6 @@ struct GenreMapping {
     "War": "10752",
     "Western": "37",
   ]
+
+  static let idToName = Dictionary(uniqueKeysWithValues: genreNameToId.map { ($1, $0) })
 }
