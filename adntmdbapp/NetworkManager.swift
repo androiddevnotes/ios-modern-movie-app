@@ -161,7 +161,6 @@ class NetworkManager: ObservableObject {
     }
   }
 
-  // Updated genre dictionary with all movie genres
   private let genreNameToId = [
     "Action": "28",
     "Adventure": "12",

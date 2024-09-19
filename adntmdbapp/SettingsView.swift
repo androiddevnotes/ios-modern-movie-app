@@ -16,15 +16,6 @@ struct SettingsView: View {
           .pickerStyle(SegmentedPickerStyle())
         }
 
-        // You can add more settings sections here
-        // For example:
-        // Section(header: Text("Notifications")) {
-        //     Toggle("Enable Notifications", isOn: .constant(true))
-        // }
-
-        // Section(header: Text("About")) {
-        //     Text("Version 1.0")
-        // }
       }
       .navigationTitle("Settings")
       .navigationBarItems(

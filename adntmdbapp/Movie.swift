@@ -7,7 +7,7 @@ struct Movie: Identifiable, Codable {
   let posterPath: String?
   let rating: Double
   var isFavorite: Bool
-  var categoryId: String  // Changed from 'let' to 'var'
+  var categoryId: String
   let genres: [String]
   let releaseDate: String
 
@@ -31,7 +31,6 @@ struct Movie: Identifiable, Codable {
     genres = try container.decodeIfPresent([String].self, forKey: .genres) ?? []
     releaseDate = try container.decode(String.self, forKey: .releaseDate)
 
-    // These properties are not part of the API response, so we set default values
     isFavorite = false
     categoryId = ""
   }
@@ -60,7 +59,7 @@ struct Movie: Identifiable, Codable {
     try container.encode(rating, forKey: .rating)
     try container.encode(genres, forKey: .genres)
     try container.encode(releaseDate, forKey: .releaseDate)
-    // We don't encode isFavorite and categoryId as they are not part of the API response
+
   }
 }
 

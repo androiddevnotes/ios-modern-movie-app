@@ -5,26 +5,8 @@ struct ContentView: View {
   @EnvironmentObject var themeManager: ThemeManager
   @State private var showingSettings = false
 
-  // **Added** state variables for Sort and Filter sheets
   @State private var showingSortView = false
   @State private var showingFilterView = false
-
-  // Added sortButton and filterButton
-  private var sortButton: some View {
-    Button(action: {
-      showingSortView = true
-    }) {
-      Image(systemName: "arrow.up.arrow.down")
-    }
-  }
-
-  private var filterButton: some View {
-    Button(action: {
-      showingFilterView = true
-    }) {
-      Image(systemName: "line.3.horizontal.decrease.circle")
-    }
-  }
 
   var body: some View {
     TabView {
@@ -34,8 +16,18 @@ struct ContentView: View {
             ToolbarItem(placement: .principal) {
               HStack {
                 settingsButton
-                sortButton
-                filterButton
+
+                Button(action: {
+                  showingSortView = true
+                }) {
+                  Image(systemName: "arrow.up.arrow.down")
+                }
+
+                Button(action: {
+                  showingFilterView = true
+                }) {
+                  Image(systemName: "line.3.horizontal.decrease.circle")
+                }
               }
             }
           }
@@ -57,7 +49,7 @@ struct ContentView: View {
       }
     }
     .accentColor(Constants.Colors.primary)
-    // **Added** Sort and Filter Sheets
+
     .sheet(isPresented: $showingSettings) {
       SettingsView()
     }
