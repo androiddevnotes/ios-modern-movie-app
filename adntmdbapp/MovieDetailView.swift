@@ -4,16 +4,15 @@ struct MovieDetailView: View {
     @ObservedObject var networkManager: NetworkManager
     @Binding var movie: Movie
     @Environment(\.presentationMode) var presentationMode
-    @GestureState private var dragOffset = CGSize.zero
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // Poster Image with Overlay
+                // Poster Image
                 ZStack(alignment: .bottomLeading) {
                     networkManager.posterImage(for: movie)
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: UIScreen.main.bounds.height * 0.6)
+                        .frame(height: 400)
                         .frame(maxWidth: .infinity)
                         .clipped()
                     
@@ -21,34 +20,29 @@ struct MovieDetailView: View {
                     
                     VStack(alignment: .leading, spacing: 8) {
                         Text(movie.title)
-                            .font(.largeTitle)
+                            .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .shadow(color: .black, radius: 2, x: 0, y: 2)
                         
-                        HStack(spacing: 8) {
-                            RatingView(rating: movie.rating)
+                        HStack(spacing: 4) {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
                             Text(String(format: "%.1f", movie.rating))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                         }
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom, 20)
+                    .padding()
                 }
-                .frame(height: UIScreen.main.bounds.height * 0.6)
+                .frame(height: 400)
                 
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 16) {
                     // Overview
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Overview")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text(movie.overview)
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                            .lineSpacing(4)
-                    }
+                    Text("Overview")
+                        .font(.headline)
+                    Text(movie.overview)
+                        .font(.body)
+                        .foregroundColor(.secondary)
                     
                     // Favorite Button
                     Button(action: {
@@ -62,8 +56,7 @@ struct MovieDetailView: View {
                         .padding()
                         .background(networkManager.isFavorite(movie) ? Color.red : Color.blue)
                         .foregroundColor(.white)
-                        .cornerRadius(15)
-                        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+                        .cornerRadius(10)
                     }
                     .padding(.top)
                 }
@@ -71,39 +64,5 @@ struct MovieDetailView: View {
             }
         }
         .edgesIgnoringSafeArea(.top)
-        .navigationBarTitle("", displayMode: .inline)
-        .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: backButton)
-        .gesture(DragGesture().updating($dragOffset) { (value, state, transaction) in
-            if value.startLocation.x < 20 && value.translation.width > 100 {
-                self.presentationMode.wrappedValue.dismiss()
-            }
-        })
-    }
-    
-    private var backButton: some View {
-        Button(action: {
-            presentationMode.wrappedValue.dismiss()
-        }) {
-            Image(systemName: "chevron.left")
-                .foregroundColor(.white)
-                .padding(12)
-                .background(Color.black.opacity(0.6))
-                .clipShape(Circle())
-        }
-    }
-}
-
-struct RatingView: View {
-    let rating: Double
-    let maxRating: Int = 5
-    
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(1...maxRating, id: \.self) { star in
-                Image(systemName: "star.fill")
-                    .foregroundColor(star <= Int(rating / 2) ? .yellow : .gray)
-            }
-        }
     }
 }
