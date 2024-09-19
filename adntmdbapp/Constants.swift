@@ -23,4 +23,13 @@ struct Constants {
   struct Colors {
     static let primary = Color("PrimaryColor")
   }
+
+  struct Strings {
+    static let overview = NSLocalizedString("overview", comment: "")
+    static let releaseDate = NSLocalizedString("releaseDate", comment: "")
+    static let genre = NSLocalizedString("genre", comment: "")
+    static let director = NSLocalizedString("director", comment: "")
+    static let addToFavorites = NSLocalizedString("addToFavorites", comment: "")
+    static let removeFromFavorites = NSLocalizedString("removeFromFavorites", comment: "")
+  }
 }
