@@ -4,52 +4,33 @@ struct ContentView: View {
   @StateObject private var networkManager = NetworkManager()
   @EnvironmentObject var themeManager: ThemeManager
   @State private var showingSettings = false
-
   @State private var showingSortView = false
   @State private var showingFilterView = false
+  @State private var selectedTab = 0
 
   var body: some View {
-    TabView {
+    TabView(selection: $selectedTab) {
       NavigationView {
         MovieListView(networkManager: networkManager)
-          .toolbar {
-            ToolbarItem(placement: .principal) {
-              HStack {
-                settingsButton
-
-                Button(action: {
-                  showingSortView = true
-                }) {
-                  Image(systemName: "arrow.up.arrow.down")
-                }
-
-                Button(action: {
-                  showingFilterView = true
-                }) {
-                  Image(systemName: "line.3.horizontal.decrease.circle")
-                }
-              }
-            }
-          }
+          .navigationBarItems(leading: leadingBarItems, trailing: trailingBarItems)
+          .navigationBarTitleDisplayMode(.inline)
       }
       .tabItem {
         Label("Movies", systemImage: "film")
       }
+      .tag(0)
 
       NavigationView {
         FavoriteView(networkManager: networkManager)
-          .toolbar {
-            ToolbarItem(placement: .principal) {
-              settingsButton
-            }
-          }
+          .navigationBarItems(trailing: settingsButton)
+          .navigationBarTitleDisplayMode(.inline)
       }
       .tabItem {
         Label("Favorites", systemImage: "heart.fill")
       }
+      .tag(1)
     }
     .accentColor(Constants.Colors.primary)
-
     .sheet(isPresented: $showingSettings) {
       SettingsView()
     }
@@ -69,14 +50,34 @@ struct ContentView: View {
     }
   }
 
-  private var settingsButton: some View {
-    Button(action: {
-      showingSettings = true
-    }) {
-      Image(systemName: "gearshape.fill")
-    }
+  private var leadingBarItems: some View {
+    Text(selectedTab == 0 ? "Movies" : "Favorites")
+      .font(.title2)
+      .fontWeight(.bold)
+      .foregroundColor(Constants.Colors.primary)
   }
 
+  private var trailingBarItems: some View {
+    HStack(spacing: 16) {
+      Button(action: { showingSortView = true }) {
+        Image(systemName: "arrow.up.arrow.down")
+          .imageScale(.large)
+      }
+      Button(action: { showingFilterView = true }) {
+        Image(systemName: "line.3.horizontal.decrease.circle")
+          .imageScale(.large)
+      }
+      settingsButton
+    }
+    .foregroundColor(Constants.Colors.primary)
+  }
+
+  private var settingsButton: some View {
+    Button(action: { showingSettings = true }) {
+      Image(systemName: "gearshape.fill")
+        .imageScale(.large)
+    }
+  }
 }
 
 struct MovieListView: View {
@@ -85,45 +86,38 @@ struct MovieListView: View {
   @State private var showingFilterView = false
 
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       SearchBar(
         text: $networkManager.searchQuery,
         onCommit: {
           networkManager.searchMovies()
         }
       )
-      .padding(.horizontal)
+      .padding()
+      .background(Color(UIColor.secondarySystemBackground))
 
-      List {
-        ForEach(networkManager.movies) { movie in
-          NavigationLink(
-            destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
-          ) {
-            MovieRowView(movie: movie, networkManager: networkManager)
+      ScrollView {
+        LazyVStack(spacing: 16) {
+          ForEach(networkManager.movies) { movie in
+            NavigationLink(
+              destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
+            ) {
+              MovieRowView(movie: movie, networkManager: networkManager)
+            }
+            .buttonStyle(PlainButtonStyle())
+          }
+          if networkManager.currentPage <= networkManager.totalPages {
+            ProgressView()
+              .frame(maxWidth: .infinity, alignment: .center)
+              .onAppear {
+                networkManager.fetchMoviesPage()
+              }
           }
         }
-        if networkManager.currentPage <= networkManager.totalPages {
-          ProgressView()
-            .onAppear {
-              networkManager.fetchMoviesPage()
-            }
-        }
+        .padding()
       }
     }
-    .sheet(isPresented: $showingSortView) {
-      SortView(networkManager: networkManager, isPresented: $showingSortView)
-    }
-    .sheet(isPresented: $showingFilterView) {
-      FilterView(
-        isPresented: $showingFilterView,
-        selectedGenres: $networkManager.selectedGenres,
-        selectedYear: $networkManager.selectedYear,
-        minRating: $networkManager.minRating
-      )
-      .onDisappear {
-        networkManager.applyFilters()
-      }
-    }
+    .background(Color(UIColor.systemBackground))
     .refreshable {
       await refreshMovies()
     }
@@ -139,14 +133,16 @@ struct MovieListView: View {
 struct MovieRowView: View {
   let movie: Movie
   @ObservedObject var networkManager: NetworkManager
+  @State private var isAnimating = false
 
   var body: some View {
-    HStack(spacing: 15) {
+    HStack(spacing: 16) {
       networkManager.posterImage(for: movie)
-        .frame(width: 60, height: 90)
+        .frame(width: 80, height: 120)
         .cornerRadius(8)
+        .shadow(radius: 4)
 
-      VStack(alignment: .leading, spacing: 5) {
+      VStack(alignment: .leading, spacing: 8) {
         Text(movie.title)
           .font(.headline)
           .lineLimit(2)
@@ -156,20 +152,59 @@ struct MovieRowView: View {
             .foregroundColor(.yellow)
           Text(String(format: "%.1f", movie.rating))
             .font(.subheadline)
+          Spacer()
+          Text(formattedReleaseDate)
+            .font(.caption)
+            .foregroundColor(.secondary)
         }
+
+        Text(movie.overview)
+          .font(.caption)
+          .foregroundColor(.secondary)
+          .lineLimit(3)
       }
 
-      Spacer()
-
-      Button(action: {
-        networkManager.toggleFavorite(for: movie)
-      }) {
-        Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
-          .foregroundColor(networkManager.isFavorite(movie) ? .red : .gray)
+      VStack {
+        Spacer()
+        favoriteButton
+        Spacer()
       }
-      .buttonStyle(PlainButtonStyle())
     }
-    .padding(.vertical, 8)
+    .padding()
+    .background(Color(UIColor.secondarySystemBackground))
+    .cornerRadius(12)
+    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+  }
+
+  private var favoriteButton: some View {
+    Button(action: {
+      withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+        networkManager.toggleFavorite(for: movie)
+        isAnimating = true
+      }
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        isAnimating = false
+      }
+    }) {
+      Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
+        .foregroundColor(networkManager.isFavorite(movie) ? .red : .gray)
+        .scaleEffect(isAnimating ? 1.3 : 1.0)
+        .frame(width: 44, height: 44)
+        .background(Color(UIColor.systemBackground))
+        .clipShape(Circle())
+        .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
+    }
+    .buttonStyle(PlainButtonStyle())
+  }
+
+  private var formattedReleaseDate: String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    if let date = dateFormatter.date(from: movie.releaseDate) {
+      dateFormatter.dateFormat = "MMM d, yyyy"
+      return dateFormatter.string(from: date)
+    }
+    return movie.releaseDate
   }
 }
 
@@ -179,18 +214,29 @@ struct SearchBar: View {
 
   var body: some View {
     HStack {
+      Image(systemName: "magnifyingglass")
+        .foregroundColor(.gray)
       TextField("Search movies...", text: $text, onCommit: onCommit)
-        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .textFieldStyle(PlainTextFieldStyle())
         .autocapitalization(.none)
         .disableAutocorrection(true)
-
-      Button(action: {
-        text = ""
-        onCommit()
-      }) {
-        Image(systemName: "xmark.circle.fill")
-          .opacity(text.isEmpty ? 0 : 1)
+      if !text.isEmpty {
+        Button(action: {
+          text = ""
+          onCommit()
+        }) {
+          Image(systemName: "xmark.circle.fill")
+            .foregroundColor(.gray)
+        }
       }
     }
+    .padding(12)
+    .background(Color(UIColor.systemBackground))
+    .cornerRadius(10)
+    .overlay(
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+    )
+    .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
   }
 }

@@ -6,10 +6,10 @@ struct Movie: Identifiable, Codable {
   let overview: String
   let posterPath: String?
   let rating: Double
-  var isFavorite: Bool
-  var categoryId: String
-  let genres: [String]
   let releaseDate: String
+  let genres: [String]
+  var isFavorite: Bool = false
+  var categoryId: String?
 
   enum CodingKeys: String, CodingKey {
     case id
@@ -17,8 +17,8 @@ struct Movie: Identifiable, Codable {
     case overview
     case posterPath = "poster_path"
     case rating = "vote_average"
-    case genres
     case releaseDate = "release_date"
+    case genres = "genre_ids"
   }
 
   init(from decoder: Decoder) throws {
@@ -28,26 +28,29 @@ struct Movie: Identifiable, Codable {
     overview = try container.decode(String.self, forKey: .overview)
     posterPath = try container.decodeIfPresent(String.self, forKey: .posterPath)
     rating = try container.decode(Double.self, forKey: .rating)
-    genres = try container.decodeIfPresent([String].self, forKey: .genres) ?? []
     releaseDate = try container.decode(String.self, forKey: .releaseDate)
 
+    // Decode genre_ids as [Int] and convert to [String]
+    let genreIds = try container.decodeIfPresent([Int].self, forKey: .genres) ?? []
+    genres = genreIds.map { String($0) }
+
     isFavorite = false
-    categoryId = ""
+    categoryId = nil
   }
 
   init(
-    id: Int, title: String, overview: String, posterPath: String?, rating: Double, isFavorite: Bool,
-    categoryId: String, genres: [String], releaseDate: String
+    id: Int, title: String, overview: String, posterPath: String?, rating: Double,
+    releaseDate: String, genres: [String], isFavorite: Bool = false, categoryId: String? = nil
   ) {
     self.id = id
     self.title = title
     self.overview = overview
     self.posterPath = posterPath
     self.rating = rating
+    self.releaseDate = releaseDate
+    self.genres = genres
     self.isFavorite = isFavorite
     self.categoryId = categoryId
-    self.genres = genres
-    self.releaseDate = releaseDate
   }
 
   func encode(to encoder: Encoder) throws {
@@ -57,9 +60,8 @@ struct Movie: Identifiable, Codable {
     try container.encode(overview, forKey: .overview)
     try container.encode(posterPath, forKey: .posterPath)
     try container.encode(rating, forKey: .rating)
-    try container.encode(genres, forKey: .genres)
     try container.encode(releaseDate, forKey: .releaseDate)
-
+    try container.encode(genres.compactMap { Int($0) }, forKey: .genres)
   }
 }
 
