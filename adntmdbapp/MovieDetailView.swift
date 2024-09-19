@@ -59,27 +59,30 @@ struct MovieDetailView: View {
                         detailRow(title: "Director", value: "John Doe") // Replace with actual director
                     }
                     .padding(.horizontal)
-                    
-                    // Favorite button
-                    Button(action: {
-                        networkManager.toggleFavorite(for: movie)
-                    }) {
-                        HStack {
-                            Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
-                            Text(networkManager.isFavorite(movie) ? "Remove from Favorites" : "Add to Favorites")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(networkManager.isFavorite(movie) ? Color.red : Constants.Colors.primary)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                    }
-                    .padding(.horizontal)
                 }
                 .padding(.vertical, 30)
             }
         }
-        .edgesIgnoringSafeArea(.all)
+        .safeAreaInset(edge: .bottom) {
+            // Favorite button
+            Button(action: {
+                networkManager.toggleFavorite(for: movie)
+            }) {
+                HStack {
+                    Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
+                    Text(networkManager.isFavorite(movie) ? "Remove from Favorites" : "Add to Favorites")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(networkManager.isFavorite(movie) ? Color.red : Constants.Colors.primary)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 8)
+            .background(Color(UIColor.systemBackground).opacity(0.8))
+        }
+        .edgesIgnoringSafeArea(.top)
     }
     
     private func detailRow(title: String, value: String) -> some View {
