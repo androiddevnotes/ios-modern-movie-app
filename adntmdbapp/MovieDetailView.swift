@@ -13,7 +13,7 @@ struct MovieDetailView: View {
 
   var body: some View {
     ScrollView {
-      VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: 16) {
 
         ZStack(alignment: .bottomLeading) {
           networkManager.posterImage(for: movie)
@@ -53,9 +53,9 @@ struct MovieDetailView: View {
               .fontWeight(.bold)
               .foregroundColor(.primary)
             Text(movie.overview)
-              .font(.body)
-              .foregroundColor(.secondary)
-              .lineSpacing(6)
+              .padding()
+              .background(Color(UIColor.secondarySystemBackground))
+              .cornerRadius(8)
           }
           .padding(.horizontal)
 
@@ -90,7 +90,7 @@ struct MovieDetailView: View {
       .background(Color(UIColor.systemBackground).opacity(0.8))
     }
     .edgesIgnoringSafeArea(.top)
-    .background(themeManager.selectedTheme == .dark ? Color.black : Color.white)
+    .background(Color(UIColor.systemBackground))
   }
 
   private var favoriteButton: some View {
