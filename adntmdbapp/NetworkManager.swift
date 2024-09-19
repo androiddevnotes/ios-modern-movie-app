@@ -48,7 +48,7 @@ class NetworkManager: ObservableObject {
         fetchMoviesPage()
     }
 
-    private func fetchMoviesPage() {
+      func fetchMoviesPage() {
         guard currentPage <= totalPages else { return }
         guard let url = URL(string: "\(baseURL)/movie/\(currentCategory.rawValue)?api_key=\(apiKey)&page=\(currentPage)") else { return }
 

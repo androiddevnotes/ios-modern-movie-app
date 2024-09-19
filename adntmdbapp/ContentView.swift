@@ -26,23 +26,18 @@ struct MovieListView: View {
         NavigationView {
             List {
                 ForEach($networkManager.movies) { $movie in
-                    ZStack(alignment: .leading) {
-                        NavigationLink(destination: MovieDetailView(movie: $movie, networkManager: networkManager)) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                        
+                    NavigationLink(destination: MovieDetailView(movie: $movie, networkManager: networkManager)) {
                         MovieRowView(movie: $movie, networkManager: networkManager)
                     }
                 }
                 if networkManager.currentPage <= networkManager.totalPages {
                     ProgressView()
                         .onAppear {
-                            networkManager.fetchMovies(for: networkManager.currentCategory)
+                            networkManager.fetchMoviesPage()
                         }
                 }
             }
-            .navigationTitle(networkManager.currentCategory.displayName)
+            .navigationTitle(Constants.UI.appTitle)
             .navigationBarItems(trailing: Button(action: {
                 showingSortView = true
             }) {
@@ -51,12 +46,16 @@ struct MovieListView: View {
             .sheet(isPresented: $showingSortView) {
                 SortView(networkManager: networkManager, isPresented: $showingSortView)
             }
-            .onAppear {
-                if networkManager.movies.isEmpty {
-                    networkManager.fetchMovies(for: .popular)
-                }
+            .refreshable {
+                await refreshMovies()
             }
         }
+    }
+
+    func refreshMovies() async {
+        networkManager.currentPage = 1
+        networkManager.movies = []
+        networkManager.fetchMoviesPage()
     }
 }
 
