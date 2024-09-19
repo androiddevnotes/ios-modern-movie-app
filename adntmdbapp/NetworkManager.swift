@@ -161,13 +161,26 @@ class NetworkManager: ObservableObject {
     }
   }
 
-  // Add this dictionary to map genre names to their IDs
+  // Updated genre dictionary with all movie genres
   private let genreNameToId = [
     "Action": "28",
     "Adventure": "12",
+    "Animation": "16",
     "Comedy": "35",
+    "Crime": "80",
+    "Documentary": "99",
     "Drama": "18",
-    "Sci-Fi": "878",
-      // Add more genres and their IDs as needed
+    "Family": "10751",
+    "Fantasy": "14",
+    "History": "36",
+    "Horror": "27",
+    "Music": "10402",
+    "Mystery": "9648",
+    "Romance": "10749",
+    "Science Fiction": "878",
+    "TV Movie": "10770",
+    "Thriller": "53",
+    "War": "10752",
+    "Western": "37",
   ]
 }

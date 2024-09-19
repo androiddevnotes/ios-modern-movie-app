@@ -6,7 +6,12 @@ struct FilterView: View {
   @Binding var selectedYear: Int?
   @Binding var minRating: Double
 
-  let genres = ["Action", "Adventure", "Comedy", "Drama", "Sci-Fi"]
+  let genres = [
+    "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family",
+    "Fantasy", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction",
+    "TV Movie", "Thriller", "War", "Western",
+  ].sorted()
+
   let years = Array(1900...Calendar.current.component(.year, from: Date())).reversed()
 
   var body: some View {
