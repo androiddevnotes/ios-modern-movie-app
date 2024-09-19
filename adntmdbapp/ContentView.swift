@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
   @StateObject private var favoritesManager = FavoritesManager()
   @StateObject private var networkManager: NetworkManager
+  @EnvironmentObject var themeManager: ThemeManager
   @State private var showingSettings = false
   @State private var showingSortView = false
   @State private var showingFilterView = false
@@ -38,6 +39,7 @@ struct ContentView: View {
     .accentColor(Constants.Colors.primary)
     .sheet(isPresented: $showingSettings) {
       SettingsView()
+        .environmentObject(themeManager)
     }
     .sheet(isPresented: $showingSortView) {
       SortView(networkManager: networkManager, isPresented: $showingSortView)

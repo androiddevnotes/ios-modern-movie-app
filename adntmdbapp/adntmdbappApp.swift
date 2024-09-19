@@ -13,7 +13,7 @@ struct adntmdbappApp: App {
     WindowGroup {
       ContentView()
         .environmentObject(themeManager)
-
+        .preferredColorScheme(themeManager.selectedTheme.colorScheme)
     }
   }
 }

@@ -15,7 +15,6 @@ struct SettingsView: View {
           }
           .pickerStyle(SegmentedPickerStyle())
         }
-
       }
       .navigationTitle("Settings")
       .navigationBarItems(
