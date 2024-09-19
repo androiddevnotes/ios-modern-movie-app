@@ -5,15 +5,19 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            MovieListView(networkManager: networkManager)
-                .tabItem {
-                    Label("Movies", systemImage: "film")
-                }
-            
-            FavoriteView(networkManager: networkManager)
-                .tabItem {
-                    Label("Favorites", systemImage: "heart.fill")
-                }
+            NavigationView {
+                MovieListView(networkManager: networkManager)
+            }
+            .tabItem {
+                Label("Movies", systemImage: "film")
+            }
+
+            NavigationView {
+                FavoriteView(networkManager: networkManager)
+            }
+            .tabItem {
+                Label("Favorites", systemImage: "heart.fill")
+            }
         }
     }
 }
@@ -23,32 +27,30 @@ struct MovieListView: View {
     @State private var showingSortView = false
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach($networkManager.movies) { $movie in
-                    NavigationLink(destination: MovieDetailView(movie: $movie, networkManager: networkManager)) {
-                        MovieRowView(movie: $movie, networkManager: networkManager)
+        List {
+            ForEach($networkManager.movies) { $movie in
+                NavigationLink(destination: MovieDetailView(networkManager: networkManager, movie: $movie)) {
+                    MovieRowView(movie: $movie, networkManager: networkManager)
+                }
+            }
+            if networkManager.currentPage <= networkManager.totalPages {
+                ProgressView()
+                    .onAppear {
+                        networkManager.fetchMoviesPage()
                     }
-                }
-                if networkManager.currentPage <= networkManager.totalPages {
-                    ProgressView()
-                        .onAppear {
-                            networkManager.fetchMoviesPage()
-                        }
-                }
             }
-            .navigationTitle(Constants.UI.appTitle)
-            .navigationBarItems(trailing: Button(action: {
-                showingSortView = true
-            }) {
-                Image(systemName: "arrow.up.arrow.down")
-            })
-            .sheet(isPresented: $showingSortView) {
-                SortView(networkManager: networkManager, isPresented: $showingSortView)
-            }
-            .refreshable {
-                await refreshMovies()
-            }
+        }
+        .navigationTitle(Constants.UI.appTitle)
+        .navigationBarItems(trailing: Button(action: {
+            showingSortView = true
+        }) {
+            Image(systemName: "arrow.up.arrow.down")
+        })
+        .sheet(isPresented: $showingSortView) {
+            SortView(networkManager: networkManager, isPresented: $showingSortView)
+        }
+        .refreshable {
+            await refreshMovies()
         }
     }
 
@@ -66,13 +68,13 @@ struct MovieRowView: View {
     var body: some View {
         HStack {
             networkManager.posterImage(for: movie)
-                .frame(width: 100, height: 150)
+                .frame(width: 50, height: 75)
             VStack(alignment: .leading) {
                 Text(movie.title)
                     .font(.headline)
-                Text(movie.overview)
+                Text("Rating: \(String(format: "%.1f", movie.rating))")
                     .font(.subheadline)
-                    .lineLimit(3)
+                    .foregroundColor(.secondary)
             }
             Spacer()
             Button(action: {

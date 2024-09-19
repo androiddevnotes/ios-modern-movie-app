@@ -1,39 +1,38 @@
 import SwiftUI
 
 struct MovieDetailView: View {
-    @Binding var movie: Movie
     @ObservedObject var networkManager: NetworkManager
+    @Binding var movie: Movie
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
-                if let posterPath = movie.posterPath {
-                    AsyncImage(url: URL(string: "\(Constants.Image.baseURL)\(posterPath)")) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                    } placeholder: {
-                        ProgressView()
-                    }
-                }
-                HStack {
+            VStack(alignment: .leading, spacing: 16) {
+                networkManager.posterImage(for: movie)
+                    .frame(height: 300)
+                    .frame(maxWidth: .infinity)
+
+                VStack(alignment: .leading, spacing: 8) {
                     Text(movie.title)
-                        .font(.largeTitle)
-                    Spacer()
+                        .font(.title)
+                        .fontWeight(.bold)
+
+                    Text("Rating: \(String(format: "%.1f", movie.rating))")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+
+                    Text(movie.overview)
+                        .font(.body)
+
                     Button(action: {
                         networkManager.toggleFavorite(for: movie)
                     }) {
-                        Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
-                            .foregroundColor(networkManager.isFavorite(movie) ? .red : .gray)
+                        Text(networkManager.isFavorite(movie) ? "Remove from Favorites" : "Add to Favorites")
                     }
-                }
-                .padding(.top)
-                Text(movie.overview)
-                    .font(.body)
                     .padding(.top)
+                }
+                .padding()
             }
-            .padding()
         }
-        .navigationTitle(movie.title)
+        .navigationBarTitle(Text(movie.title), displayMode: .inline)
     }
 }

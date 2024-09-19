@@ -7,7 +7,7 @@ struct FavoriteView: View {
         NavigationView {
             List {
                 ForEach($networkManager.favoriteMovies) { $movie in
-                    NavigationLink(destination: MovieDetailView(movie: $movie, networkManager: networkManager)) {
+                    NavigationLink(destination: MovieDetailView(networkManager: networkManager, movie: $movie)) {
                         MovieRowView(movie: $movie, networkManager: networkManager)
                     }
                 }

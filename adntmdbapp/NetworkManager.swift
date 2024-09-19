@@ -63,6 +63,7 @@ class NetworkManager: ObservableObject {
                                   title: movie.title,
                                   overview: movie.overview,
                                   posterPath: movie.posterPath,
+                                  rating: movie.voteAverage, // Add this line
                                   isFavorite: self.favoriteIds.contains(movie.id),
                                   categoryId: self.currentCategory.rawValue)
                         }
