@@ -5,6 +5,10 @@ struct MovieDetailView: View {
   @Binding var movie: Movie
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.colorScheme) var colorScheme
+  @State private var showingFilterView = false
+  @State private var selectedGenres: Set<String> = []
+  @State private var selectedYear: Int?
+  @State private var minRating: Double = 0.0
 
   var body: some View {
     ScrollView {
@@ -65,27 +69,45 @@ struct MovieDetailView: View {
       }
     }
     .safeAreaInset(edge: .bottom) {
-
-      Button(action: {
-        networkManager.toggleFavorite(for: movie)
-      }) {
-        HStack {
-          Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
-          Text(
-            networkManager.isFavorite(movie)
-              ? Constants.Strings.removeFromFavorites : Constants.Strings.addToFavorites)
+      HStack {
+        Button(action: {
+          networkManager.toggleFavorite(for: movie)
+        }) {
+          HStack {
+            Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
+            Text(
+              networkManager.isFavorite(movie)
+                ? Constants.Strings.removeFromFavorites : Constants.Strings.addToFavorites)
+          }
+          .frame(maxWidth: .infinity)
+          .padding()
+          .background(networkManager.isFavorite(movie) ? Color.red : Constants.Colors.primary)
+          .foregroundColor(.white)
+          .cornerRadius(10)
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(networkManager.isFavorite(movie) ? Color.red : Constants.Colors.primary)
-        .foregroundColor(.white)
-        .cornerRadius(10)
+
+        Button(action: {
+          showingFilterView = true
+        }) {
+          Image(systemName: "line.3.horizontal.decrease.circle")
+            .foregroundColor(.white)
+            .padding()
+            .background(Constants.Colors.primary)
+            .clipShape(Circle())
+        }
       }
       .padding(.horizontal)
       .padding(.bottom, 8)
       .background(Color(UIColor.systemBackground).opacity(0.8))
     }
     .edgesIgnoringSafeArea(.top)
+    .sheet(isPresented: $showingFilterView) {
+      FilterView(
+        isPresented: $showingFilterView,
+        selectedGenres: $selectedGenres,
+        selectedYear: $selectedYear,
+        minRating: $minRating)
+    }
   }
 
   private func detailRow(title: String, value: String) -> some View {
