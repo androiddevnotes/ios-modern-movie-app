@@ -6,15 +6,15 @@ class NetworkManager: ObservableObject {
     var totalPages = 1
 
     private var apiKey: String {
-        if let path = Bundle.main.path(forResource: "Secrets", ofType: "plist"),
+        if let path = Bundle.main.path(forResource: Constants.Secrets.plistName, ofType: "plist"),
            let dict = NSDictionary(contentsOfFile: path),
-           let apiKey = dict["API_KEY"] as? String {
+           let apiKey = dict[Constants.Secrets.apiKeyKey] as? String {
             return apiKey
         }
         return ""
     }
 
-    private let baseURL = "https://api.themoviedb.org/3/movie/popular"
+    private let baseURL = Constants.API.baseURL
 
     func fetchPopularMovies() {
         guard currentPage <= totalPages else { return }

@@ -7,7 +7,7 @@ struct MovieDetailView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 if let posterPath = movie.posterPath {
-                    AsyncImage(url: URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")) { image in
+                    AsyncImage(url: URL(string: "\(Constants.Image.baseURL)\(posterPath)")) { image in
                         image
                             .resizable()
                             .scaledToFit()
