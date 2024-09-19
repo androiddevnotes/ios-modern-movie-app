@@ -9,6 +9,23 @@ struct ContentView: View {
   @State private var showingSortView = false
   @State private var showingFilterView = false
 
+  // Added sortButton and filterButton
+  private var sortButton: some View {
+    Button(action: {
+      showingSortView = true
+    }) {
+      Image(systemName: "arrow.up.arrow.down")
+    }
+  }
+
+  private var filterButton: some View {
+    Button(action: {
+      showingFilterView = true
+    }) {
+      Image(systemName: "line.3.horizontal.decrease.circle")
+    }
+  }
+
   var body: some View {
     TabView {
       NavigationView {
@@ -17,18 +34,8 @@ struct ContentView: View {
             ToolbarItem(placement: .principal) {
               HStack {
                 settingsButton
-
-                Button(action: {
-                  showingSortView = true
-                }) {
-                  Image(systemName: "arrow.up.arrow.down")
-                }
-
-                Button(action: {
-                  showingFilterView = true
-                }) {
-                  Image(systemName: "line.3.horizontal.decrease.circle")
-                }
+                sortButton
+                filterButton
               }
             }
           }
