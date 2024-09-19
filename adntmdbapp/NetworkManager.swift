@@ -69,4 +69,8 @@ class NetworkManager: ObservableObject {
             objectWillChange.send()  // Notify observers of the change
         }
     }
+
+    var favoriteMovies: [Movie] {
+        movies.filter { $0.isFavorite }
+    }
 }

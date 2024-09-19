@@ -4,6 +4,24 @@ struct ContentView: View {
     @StateObject private var networkManager = NetworkManager()
 
     var body: some View {
+        TabView {
+            MovieListView(networkManager: networkManager)
+                .tabItem {
+                    Label("Movies", systemImage: "film")
+                }
+            
+            FavoriteView(networkManager: networkManager)
+                .tabItem {
+                    Label("Favorites", systemImage: "heart.fill")
+                }
+        }
+    }
+}
+
+struct MovieListView: View {
+    @ObservedObject var networkManager: NetworkManager
+
+    var body: some View {
         NavigationView {
             List {
                 ForEach($networkManager.movies) { $movie in
