@@ -26,10 +26,10 @@ class NetworkManager: ObservableObject {
     private let imageBaseURL = Constants.Image.baseURL
 
     enum MovieCategory: String, CaseIterable {
-        case popular = "popular"
-        case upcoming = "upcoming"
-        case nowPlaying = "now_playing"
-        case topRated = "top_rated"
+        case popular = "popularity.desc"
+        case upcoming = "primary_release_date.asc"
+        case nowPlaying = "primary_release_date.desc"
+        case topRated = "vote_average.desc"
         
         var displayName: String {
             switch self {
@@ -48,9 +48,10 @@ class NetworkManager: ObservableObject {
         fetchMoviesPage()
     }
 
-      func fetchMoviesPage() {
+    func fetchMoviesPage() {
         guard currentPage <= totalPages else { return }
-        guard let url = URL(string: "\(baseURL)/movie/\(currentCategory.rawValue)?api_key=\(apiKey)&page=\(currentPage)") else { return }
+        let urlString = "\(baseURL)/discover/movie?api_key=\(apiKey)&page=\(currentPage)&sort_by=\(currentCategory.rawValue)"
+        guard let url = URL(string: urlString) else { return }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data {
