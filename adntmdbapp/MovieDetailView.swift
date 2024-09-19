@@ -38,7 +38,7 @@ struct MovieDetailView: View {
                 .frame(height: 300)
                 
                 VStack(alignment: .leading, spacing: 20) {
-                    // Overview
+ 
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Overview")
                             .font(.headline)
@@ -50,7 +50,7 @@ struct MovieDetailView: View {
                     }
                     .padding(.horizontal)
                     
-                    // Favorite Button
+ 
                     Button(action: {
                         networkManager.toggleFavorite(for: movie)
                     }) {
@@ -70,6 +70,5 @@ struct MovieDetailView: View {
             }
         }
         .edgesIgnoringSafeArea(.top)
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
