@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var networkManager = NetworkManager()
+    @State private var selectedMovie: Movie?
 
     var body: some View {
         NavigationView {
@@ -26,6 +27,18 @@ struct ContentView: View {
                                 .lineLimit(3)
                         }
                     }
+                    .onTapGesture {
+                        selectedMovie = movie
+                    }
+                    .background(
+                        NavigationLink(destination: MovieDetailView(movie: selectedMovie ?? movie), isActive: Binding(
+                            get: { selectedMovie == movie },
+                            set: { if !$0 { selectedMovie = nil } }
+                        )) {
+                            EmptyView()
+                        }
+                        .hidden()
+                    )
                 }
                 if networkManager.currentPage <= networkManager.totalPages {
                     ProgressView()

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Movie: Identifiable, Decodable {
+struct Movie: Identifiable, Decodable, Equatable {
     let id: Int
     let title: String
     let overview: String
@@ -11,6 +11,10 @@ struct Movie: Identifiable, Decodable {
         case title
         case overview
         case posterPath = "poster_path"
+    }
+
+    static func == (lhs: Movie, rhs: Movie) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 
