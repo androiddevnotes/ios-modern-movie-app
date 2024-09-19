@@ -2,12 +2,14 @@ import SwiftUI
 
 struct ContentView: View {
   @StateObject private var networkManager = NetworkManager()
-  @Environment(\.colorScheme) var colorScheme
+  @EnvironmentObject var themeManager: ThemeManager
+  @State private var showingSettings = false
 
   var body: some View {
     TabView {
       NavigationView {
         MovieListView(networkManager: networkManager)
+          .navigationBarItems(trailing: settingsButton)
       }
       .tabItem {
         Label("Movies", systemImage: "film")
@@ -15,12 +17,24 @@ struct ContentView: View {
 
       NavigationView {
         FavoriteView(networkManager: networkManager)
+          .navigationBarItems(trailing: settingsButton)
       }
       .tabItem {
         Label("Favorites", systemImage: "heart.fill")
       }
     }
     .accentColor(Constants.Colors.primary)
+    .sheet(isPresented: $showingSettings) {
+      SettingsView()
+    }
+  }
+
+  private var settingsButton: some View {
+    Button(action: {
+      showingSettings = true
+    }) {
+      Image(systemName: "gearshape.fill")
+    }
   }
 }
 

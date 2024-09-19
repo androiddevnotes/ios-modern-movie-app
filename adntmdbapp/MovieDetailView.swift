@@ -4,7 +4,7 @@ struct MovieDetailView: View {
   @ObservedObject var networkManager: NetworkManager
   @Binding var movie: Movie
   @Environment(\.presentationMode) var presentationMode
-  @Environment(\.colorScheme) var colorScheme
+  @EnvironmentObject var themeManager: ThemeManager
   @State private var showingFilterView = false
   @State private var selectedGenres: Set<String> = []
   @State private var selectedYear: Int?
@@ -89,6 +89,7 @@ struct MovieDetailView: View {
       .background(Color(UIColor.systemBackground).opacity(0.8))
     }
     .edgesIgnoringSafeArea(.top)
+    .background(themeManager.selectedTheme == .dark ? Color.black : Color.white)
   }
 
   private func detailRow(title: String, value: String) -> some View {
