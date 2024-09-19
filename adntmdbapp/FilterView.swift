@@ -28,7 +28,6 @@ struct FilterView: View {
             }
             .padding(.vertical, 8)
           }
-          .listRowInsets(EdgeInsets())
         }
 
         Section(header: Text("Release Year")) {
@@ -38,6 +37,7 @@ struct FilterView: View {
               Text(String(year)).tag(year as Int?)
             }
           }
+          .pickerStyle(WheelPickerStyle())
         }
 
         Section(header: Text("Minimum Rating")) {
