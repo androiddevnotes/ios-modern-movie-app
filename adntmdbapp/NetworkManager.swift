@@ -9,6 +9,10 @@ class NetworkManager: ObservableObject {
     var totalPages = 1
     private var favoriteIds: Set<Int> = []
 
+    init() {
+        loadFavorites()
+    }
+
     private var apiKey: String {
         if let path = Bundle.main.path(forResource: Constants.Secrets.plistName, ofType: "plist"),
            let dict = NSDictionary(contentsOfFile: path),
@@ -110,10 +114,28 @@ class NetworkManager: ObservableObject {
             movies[index].isFavorite.toggle()
         }
         
+        saveFavorites()
         objectWillChange.send()
     }
 
     func isFavorite(_ movie: Movie) -> Bool {
         favoriteIds.contains(movie.id)
+    }
+
+    private func saveFavorites() {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(favoriteMovies) {
+            UserDefaults.standard.set(encoded, forKey: "FavoriteMovies")
+        }
+    }
+
+    private func loadFavorites() {
+        if let savedFavorites = UserDefaults.standard.data(forKey: "FavoriteMovies") {
+            let decoder = JSONDecoder()
+            if let loadedFavorites = try? decoder.decode([Movie].self, from: savedFavorites) {
+                favoriteMovies = loadedFavorites
+                favoriteIds = Set(loadedFavorites.map { $0.id })
+            }
+        }
     }
 }
