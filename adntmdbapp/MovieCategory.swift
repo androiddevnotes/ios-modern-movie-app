@@ -1,5 +1,3 @@
-import Foundation
-
 enum MovieCategory: String, CaseIterable {
   case popular = "popularity.desc"
   case upcoming = "primary_release_date.asc"

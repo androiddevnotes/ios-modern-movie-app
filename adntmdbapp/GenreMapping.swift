@@ -1,5 +1,3 @@
-import Foundation
-
 struct GenreMapping {
   static let genreNameToId = [
     "Action": "28",
