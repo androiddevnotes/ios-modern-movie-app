@@ -18,23 +18,17 @@ struct FilterView: View {
     NavigationView {
       Form {
         Section(header: Text("Genres")) {
-          ForEach(genres, id: \.self) { genre in
-            Button(action: {
-              if selectedGenres.contains(genre) {
-                selectedGenres.remove(genre)
-              } else {
-                selectedGenres.insert(genre)
-              }
-            }) {
-              HStack {
-                Text(genre)
-                Spacer()
-                if selectedGenres.contains(genre) {
-                  Image(systemName: "checkmark")
+          ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 8) {
+              ForEach(genres, id: \.self) { genre in
+                GenreTagView(genre: genre, isSelected: selectedGenres.contains(genre)) {
+                  toggleGenre(genre)
                 }
               }
             }
+            .padding(.vertical, 8)
           }
+          .listRowInsets(EdgeInsets())
         }
 
         Section(header: Text("Release Year")) {
@@ -57,6 +51,35 @@ struct FilterView: View {
         trailing: Button("Apply") {
           isPresented = false
         })
+    }
+  }
+
+  private func toggleGenre(_ genre: String) {
+    if selectedGenres.contains(genre) {
+      selectedGenres.remove(genre)
+    } else {
+      selectedGenres.insert(genre)
+    }
+  }
+}
+
+struct GenreTagView: View {
+  let genre: String
+  let isSelected: Bool
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      Text(genre)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(isSelected ? Constants.Colors.primary : Color.gray.opacity(0.2))
+        .foregroundColor(isSelected ? .white : .primary)
+        .cornerRadius(20)
+        .overlay(
+          RoundedRectangle(cornerRadius: 20)
+            .stroke(isSelected ? Constants.Colors.primary : Color.gray, lineWidth: 1)
+        )
     }
   }
 }
