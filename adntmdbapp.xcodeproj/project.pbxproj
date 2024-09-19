@@ -16,6 +16,7 @@
 		6AE98CD42C9C81BB00E96343 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6AE98CD32C9C81BB00E96343 /* Secrets.plist */; };
 		6AE98CF02C9C88D200E96343 /* MovieDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE98CEF2C9C88D200E96343 /* MovieDetailView.swift */; };
 		6AE98CF22C9C89ED00E96343 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE98CF12C9C89ED00E96343 /* Constants.swift */; };
+		6AE98CF92C9C8D5700E96343 /* Atlantis in Frameworks */ = {isa = PBXBuildFile; productRef = 6AE98CF82C9C8D5700E96343 /* Atlantis */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		6AE98CD32C9C81BB00E96343 /* Secrets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
 		6AE98CEF2C9C88D200E96343 /* MovieDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieDetailView.swift; sourceTree = "<group>"; };
 		6AE98CF12C9C89ED00E96343 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		6AE98CFA2C9C8D8A00E96343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AE98CF92C9C8D5700E96343 /* Atlantis in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +65,7 @@
 		6A4A38272C9C7308001FA9A9 /* adntmdbapp */ = {
 			isa = PBXGroup;
 			children = (
+				6AE98CFA2C9C8D8A00E96343 /* Info.plist */,
 				6AE98CF12C9C89ED00E96343 /* Constants.swift */,
 				6AE98CEF2C9C88D200E96343 /* MovieDetailView.swift */,
 				6AE98CCF2C9C7F2900E96343 /* Movie.swift */,
@@ -98,6 +102,9 @@
 			dependencies = (
 			);
 			name = adntmdbapp;
+			packageProductDependencies = (
+				6AE98CF82C9C8D5700E96343 /* Atlantis */,
+			);
 			productName = adntmdbapp;
 			productReference = 6A4A38252C9C7308001FA9A9 /* adntmdbapp.app */;
 			productType = "com.apple.product-type.application";
@@ -126,6 +133,9 @@
 				Base,
 			);
 			mainGroup = 6A4A381C2C9C7308001FA9A9;
+			packageReferences = (
+				6AE98CF72C9C8D5700E96343 /* XCRemoteSwiftPackageReference "atlantis" */,
+			);
 			productRefGroup = 6A4A38262C9C7308001FA9A9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -295,6 +305,8 @@
 				DEVELOPMENT_TEAM = MDNUUAHTT6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = adntmdbapp/Info.plist;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Atlantis uses Bonjour Service to send your recorded traffic to Proxyman app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -324,6 +336,8 @@
 				DEVELOPMENT_TEAM = MDNUUAHTT6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = adntmdbapp/Info.plist;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Atlantis uses Bonjour Service to send your recorded traffic to Proxyman app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -364,6 +378,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6AE98CF72C9C8D5700E96343 /* XCRemoteSwiftPackageReference "atlantis" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ProxymanApp/atlantis";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.25.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6AE98CF82C9C8D5700E96343 /* Atlantis */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AE98CF72C9C8D5700E96343 /* XCRemoteSwiftPackageReference "atlantis" */;
+			productName = Atlantis;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6A4A381D2C9C7308001FA9A9 /* Project object */;
 }
