@@ -1,17 +1,25 @@
 import SwiftUI
 
 struct FavoriteView: View {
-  @ObservedObject var networkManager: NetworkManager
+  @ObservedObject var favoritesManager: FavoritesManager
   @EnvironmentObject var themeManager: ThemeManager
 
   var body: some View {
     ScrollView {
       LazyVStack(spacing: 16) {
-        ForEach(networkManager.favoriteMovies) { movie in
+        ForEach(favoritesManager.favoriteMovies) { movie in
           NavigationLink(
-            destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
+            destination: MovieDetailView(
+              networkManager: NetworkManager(favoritesManager: favoritesManager),
+              favoritesManager: favoritesManager,
+              movie: .constant(movie)
+            )
           ) {
-            MovieRowView(movie: movie, networkManager: networkManager)
+            MovieRowView(
+              movie: movie,
+              networkManager: NetworkManager(favoritesManager: favoritesManager),
+              favoritesManager: favoritesManager
+            )
           }
           .buttonStyle(PlainButtonStyle())
         }
@@ -25,7 +33,7 @@ struct FavoriteView: View {
 
   @ViewBuilder
   private var emptyStateView: some View {
-    if networkManager.favoriteMovies.isEmpty {
+    if favoritesManager.favoriteMovies.isEmpty {
       VStack(spacing: 16) {
         Image(systemName: "heart.slash")
           .font(.system(size: 60))

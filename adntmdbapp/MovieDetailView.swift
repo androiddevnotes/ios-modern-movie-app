@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MovieDetailView: View {
   @ObservedObject var networkManager: NetworkManager
+  @ObservedObject var favoritesManager: FavoritesManager
   @Binding var movie: Movie
   @Environment(\.presentationMode) var presentationMode
   @EnvironmentObject var themeManager: ThemeManager
@@ -59,9 +60,9 @@ struct MovieDetailView: View {
           .padding(.horizontal)
 
           VStack(alignment: .leading, spacing: 15) {
-            detailRow(title: Constants.Strings.releaseDate, value: "2023-05-15")
-            detailRow(title: Constants.Strings.genre, value: "Action, Adventure")
-            detailRow(title: Constants.Strings.director, value: "John Doe")
+            detailRow(title: Constants.Strings.releaseDate, value: movie.releaseDate)
+            detailRow(title: Constants.Strings.genre, value: movie.genres.joined(separator: ", "))
+
           }
           .padding(.horizontal)
         }
@@ -70,17 +71,17 @@ struct MovieDetailView: View {
     }
     .safeAreaInset(edge: .bottom) {
       Button(action: {
-        networkManager.toggleFavorite(for: movie)
+        favoritesManager.toggleFavorite(for: movie)
       }) {
         HStack {
-          Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
+          Image(systemName: favoritesManager.isFavorite(movie) ? "heart.fill" : "heart")
           Text(
-            networkManager.isFavorite(movie)
+            favoritesManager.isFavorite(movie)
               ? Constants.Strings.removeFromFavorites : Constants.Strings.addToFavorites)
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(networkManager.isFavorite(movie) ? Color.red : Constants.Colors.primary)
+        .background(favoritesManager.isFavorite(movie) ? Color.red : Constants.Colors.primary)
         .foregroundColor(.white)
         .cornerRadius(10)
       }
@@ -90,6 +91,18 @@ struct MovieDetailView: View {
     }
     .edgesIgnoringSafeArea(.top)
     .background(themeManager.selectedTheme == .dark ? Color.black : Color.white)
+  }
+
+  private var favoriteButton: some View {
+    Button(action: {
+      favoritesManager.toggleFavorite(for: movie)
+    }) {
+      HStack {
+        Image(systemName: favoritesManager.isFavorite(movie) ? "heart.fill" : "heart")
+        Text(favoritesManager.isFavorite(movie) ? "Remove from Favorites" : "Add to Favorites")
+      }
+      .foregroundColor(favoritesManager.isFavorite(movie) ? .red : .blue)
+    }
   }
 
   private func detailRow(title: String, value: String) -> some View {

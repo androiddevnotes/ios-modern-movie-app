@@ -1,17 +1,23 @@
 import SwiftUI
 
 struct ContentView: View {
-  @StateObject private var networkManager = NetworkManager()
+  @StateObject private var favoritesManager = FavoritesManager()
+  @StateObject private var networkManager: NetworkManager
   @EnvironmentObject var themeManager: ThemeManager
   @State private var showingSettings = false
   @State private var showingSortView = false
   @State private var showingFilterView = false
   @State private var selectedTab = 0
 
+  init() {
+    let favoritesManager = FavoritesManager()
+    _networkManager = StateObject(wrappedValue: NetworkManager(favoritesManager: favoritesManager))
+  }
+
   var body: some View {
     TabView(selection: $selectedTab) {
       NavigationView {
-        MovieListView(networkManager: networkManager)
+        MovieListView(networkManager: networkManager, favoritesManager: favoritesManager)
           .navigationBarItems(leading: leadingBarItems, trailing: trailingBarItems)
           .navigationBarTitleDisplayMode(.inline)
       }
@@ -21,7 +27,7 @@ struct ContentView: View {
       .tag(0)
 
       NavigationView {
-        FavoriteView(networkManager: networkManager)
+        FavoriteView(favoritesManager: favoritesManager)
           .navigationBarItems(trailing: settingsButton)
           .navigationBarTitleDisplayMode(.inline)
       }
@@ -82,6 +88,7 @@ struct ContentView: View {
 
 struct MovieListView: View {
   @ObservedObject var networkManager: NetworkManager
+  @ObservedObject var favoritesManager: FavoritesManager
   @State private var showingSortView = false
   @State private var showingFilterView = false
 
@@ -100,9 +107,17 @@ struct MovieListView: View {
         LazyVStack(spacing: 16) {
           ForEach(networkManager.movies) { movie in
             NavigationLink(
-              destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
+              destination: MovieDetailView(
+                networkManager: networkManager,
+                favoritesManager: favoritesManager,
+                movie: .constant(movie)
+              )
             ) {
-              MovieRowView(movie: movie, networkManager: networkManager)
+              MovieRowView(
+                movie: movie,
+                networkManager: networkManager,
+                favoritesManager: favoritesManager
+              )
             }
             .buttonStyle(PlainButtonStyle())
           }
@@ -133,6 +148,7 @@ struct MovieListView: View {
 struct MovieRowView: View {
   let movie: Movie
   @ObservedObject var networkManager: NetworkManager
+  @ObservedObject var favoritesManager: FavoritesManager
   @State private var isAnimating = false
 
   var body: some View {
@@ -179,15 +195,15 @@ struct MovieRowView: View {
   private var favoriteButton: some View {
     Button(action: {
       withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-        networkManager.toggleFavorite(for: movie)
+        favoritesManager.toggleFavorite(for: movie)
         isAnimating = true
       }
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
         isAnimating = false
       }
     }) {
-      Image(systemName: networkManager.isFavorite(movie) ? "heart.fill" : "heart")
-        .foregroundColor(networkManager.isFavorite(movie) ? .red : .gray)
+      Image(systemName: favoritesManager.isFavorite(movie) ? "heart.fill" : "heart")
+        .foregroundColor(favoritesManager.isFavorite(movie) ? .red : .gray)
         .scaleEffect(isAnimating ? 1.3 : 1.0)
         .frame(width: 44, height: 44)
         .background(Color(UIColor.systemBackground))

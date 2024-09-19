@@ -3,18 +3,18 @@ import SwiftUI
 
 class NetworkManager: ObservableObject {
   @Published var movies: [Movie] = []
-  @Published var favoriteMovies: [Movie] = []
   @Published var currentCategory: MovieCategory = .popular
   var currentPage = 1
   var totalPages = 1
-  private var favoriteIds: Set<Int> = []
   @Published var selectedGenres: Set<String> = []
   @Published var selectedYear: Int?
   @Published var minRating: Double = 0.0
   @Published var searchQuery = ""
 
-  init() {
-    loadFavorites()
+  let favoritesManager: FavoritesManager
+
+  init(favoritesManager: FavoritesManager) {
+    self.favoritesManager = favoritesManager
   }
 
   private var apiKey: String {
@@ -69,7 +69,7 @@ class NetworkManager: ObservableObject {
           DispatchQueue.main.async {
             let newMovies = movieResponse.results.map { movie in
               var updatedMovie = movie
-              updatedMovie.isFavorite = self.favoriteIds.contains(movie.id)
+              updatedMovie.isFavorite = self.favoritesManager.isFavorite(movie)
               updatedMovie.categoryId = self.currentCategory.rawValue
               return updatedMovie
             }
@@ -105,7 +105,7 @@ class NetworkManager: ObservableObject {
           DispatchQueue.main.async {
             self.movies = movieResponse.results.map { movie in
               var updatedMovie = movie
-              updatedMovie.isFavorite = self.favoriteIds.contains(movie.id)
+              updatedMovie.isFavorite = self.favoritesManager.isFavorite(movie)
               return updatedMovie
             }
             self.currentPage = 2
@@ -141,52 +141,5 @@ class NetworkManager: ObservableObject {
           .foregroundColor(.gray)
       }
     }
-  }
-
-  func toggleFavorite(for movie: Movie) {
-    if favoriteIds.contains(movie.id) {
-      favoriteIds.remove(movie.id)
-      favoriteMovies.removeAll { $0.id == movie.id }
-    } else {
-      favoriteIds.insert(movie.id)
-      favoriteMovies.append(movie)
-    }
-
-    if let index = movies.firstIndex(where: { $0.id == movie.id }) {
-      movies[index].isFavorite.toggle()
-    }
-
-    saveFavorites()
-    objectWillChange.send()
-  }
-
-  func isFavorite(_ movie: Movie) -> Bool {
-    favoriteIds.contains(movie.id)
-  }
-
-  private func saveFavorites() {
-    let encoder = JSONEncoder()
-    if let encoded = try? encoder.encode(favoriteMovies) {
-      UserDefaults.standard.set(encoded, forKey: "FavoriteMovies")
-    }
-  }
-
-  private func loadFavorites() {
-    if let savedFavorites = UserDefaults.standard.data(forKey: "FavoriteMovies") {
-      let decoder = JSONDecoder()
-      if let loadedFavorites = try? decoder.decode([Movie].self, from: savedFavorites) {
-        favoriteMovies = loadedFavorites
-        favoriteIds = Set(loadedFavorites.map { $0.id })
-      }
-    }
-  }
-
-}
-
-extension NetworkManager {
-  func removeFromFavorites(_ movie: Movie) {
-    favoriteMovies.removeAll { $0.id == movie.id }
-    favoriteIds.remove(movie.id)
-    saveFavorites()
   }
 }
