@@ -11,6 +11,7 @@ class NetworkManager: ObservableObject {
   @Published var selectedGenres: Set<String> = []
   @Published var selectedYear: Int?
   @Published var minRating: Double = 0.0
+  @Published var searchQuery = ""
 
   init() {
     loadFavorites()
@@ -89,6 +90,40 @@ class NetworkManager: ObservableObject {
             }
             self.movies.append(contentsOf: newMovies)
             self.currentPage += 1
+            self.totalPages = movieResponse.totalPages
+          }
+        } catch {
+          print("Error decoding JSON: \(error)")
+        }
+      }
+    }.resume()
+  }
+
+  func searchMovies() {
+    guard !searchQuery.isEmpty else {
+      fetchMovies(for: currentCategory)
+      return
+    }
+
+    currentPage = 1
+    movies = []
+
+    let urlString =
+      "\(baseURL)/search/movie?api_key=\(apiKey)&query=\(searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+
+    guard let url = URL(string: urlString) else { return }
+
+    URLSession.shared.dataTask(with: url) { data, response, error in
+      if let data = data {
+        do {
+          let movieResponse = try JSONDecoder().decode(MovieResponse.self, from: data)
+          DispatchQueue.main.async {
+            self.movies = movieResponse.results.map { movie in
+              var updatedMovie = movie
+              updatedMovie.isFavorite = self.favoriteIds.contains(movie.id)
+              return updatedMovie
+            }
+            self.currentPage = 2
             self.totalPages = movieResponse.totalPages
           }
         } catch {

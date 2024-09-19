@@ -85,22 +85,31 @@ struct MovieListView: View {
   @State private var showingFilterView = false
 
   var body: some View {
-    List {
-      ForEach(networkManager.movies) { movie in
-        NavigationLink(
-          destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
-        ) {
-          MovieRowView(movie: movie, networkManager: networkManager)
+    VStack {
+      SearchBar(
+        text: $networkManager.searchQuery,
+        onCommit: {
+          networkManager.searchMovies()
+        }
+      )
+      .padding(.horizontal)
+
+      List {
+        ForEach(networkManager.movies) { movie in
+          NavigationLink(
+            destination: MovieDetailView(networkManager: networkManager, movie: .constant(movie))
+          ) {
+            MovieRowView(movie: movie, networkManager: networkManager)
+          }
+        }
+        if networkManager.currentPage <= networkManager.totalPages {
+          ProgressView()
+            .onAppear {
+              networkManager.fetchMoviesPage()
+            }
         }
       }
-      if networkManager.currentPage <= networkManager.totalPages {
-        ProgressView()
-          .onAppear {
-            networkManager.fetchMoviesPage()
-          }
-      }
     }
-
     .sheet(isPresented: $showingSortView) {
       SortView(networkManager: networkManager, isPresented: $showingSortView)
     }
@@ -161,5 +170,27 @@ struct MovieRowView: View {
       .buttonStyle(PlainButtonStyle())
     }
     .padding(.vertical, 8)
+  }
+}
+
+struct SearchBar: View {
+  @Binding var text: String
+  var onCommit: () -> Void
+
+  var body: some View {
+    HStack {
+      TextField("Search movies...", text: $text, onCommit: onCommit)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .autocapitalization(.none)
+        .disableAutocorrection(true)
+
+      Button(action: {
+        text = ""
+        onCommit()
+      }) {
+        Image(systemName: "xmark.circle.fill")
+          .opacity(text.isEmpty ? 0 : 1)
+      }
+    }
   }
 }
