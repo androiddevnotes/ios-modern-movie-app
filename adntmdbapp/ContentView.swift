@@ -3,7 +3,6 @@ import SwiftUI
 struct ContentView: View {
   @StateObject private var favoritesManager = FavoritesManager()
   @StateObject private var networkManager: NetworkManager
-  @EnvironmentObject var themeManager: ThemeManager
   @State private var showingSettings = false
   @State private var showingSortView = false
   @State private var showingFilterView = false
@@ -132,7 +131,6 @@ struct MovieListView: View {
         .padding()
       }
     }
-    .background(Color(UIColor.systemBackground))
     .refreshable {
       await refreshMovies()
     }

@@ -5,7 +5,6 @@ struct MovieDetailView: View {
   @ObservedObject var favoritesManager: FavoritesManager
   @Binding var movie: Movie
   @Environment(\.presentationMode) var presentationMode
-  @EnvironmentObject var themeManager: ThemeManager
   @State private var showingFilterView = false
   @State private var selectedGenres: Set<String> = []
   @State private var selectedYear: Int?
@@ -90,7 +89,7 @@ struct MovieDetailView: View {
       .background(Color(UIColor.systemBackground).opacity(0.8))
     }
     .edgesIgnoringSafeArea(.top)
-    .background(Color(UIColor.systemBackground))
+    .navigationBarTitle(movie.title, displayMode: .inline)
   }
 
   private var favoriteButton: some View {
