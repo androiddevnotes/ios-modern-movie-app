@@ -18,6 +18,7 @@
 		6AE98CF22C9C89ED00E96343 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE98CF12C9C89ED00E96343 /* Constants.swift */; };
 		6AE98CF92C9C8D5700E96343 /* Atlantis in Frameworks */ = {isa = PBXBuildFile; productRef = 6AE98CF82C9C8D5700E96343 /* Atlantis */; };
 		6AE98CFE2C9CA04E00E96343 /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE98CFD2C9CA04E00E96343 /* FavoriteView.swift */; };
+		6AE98D002C9CA14100E96343 /* SortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE98CFF2C9CA14100E96343 /* SortView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		6AE98CF12C9C89ED00E96343 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		6AE98CFA2C9C8D8A00E96343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6AE98CFD2C9CA04E00E96343 /* FavoriteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
+		6AE98CFF2C9CA14100E96343 /* SortView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 		6A4A38272C9C7308001FA9A9 /* adntmdbapp */ = {
 			isa = PBXGroup;
 			children = (
+				6AE98CFF2C9CA14100E96343 /* SortView.swift */,
 				6AE98CFD2C9CA04E00E96343 /* FavoriteView.swift */,
 				6AE98CFA2C9C8D8A00E96343 /* Info.plist */,
 				6AE98CF12C9C89ED00E96343 /* Constants.swift */,
@@ -170,6 +173,7 @@
 				6AE98CD22C9C7F2900E96343 /* NetworkManager.swift in Sources */,
 				6AE98CFE2C9CA04E00E96343 /* FavoriteView.swift in Sources */,
 				6A4A382B2C9C7308001FA9A9 /* ContentView.swift in Sources */,
+				6AE98D002C9CA14100E96343 /* SortView.swift in Sources */,
 				6A4A38292C9C7308001FA9A9 /* adntmdbappApp.swift in Sources */,
 				6AE98CD12C9C7F2900E96343 /* Movie.swift in Sources */,
 				6AE98CF22C9C89ED00E96343 /* Constants.swift in Sources */,

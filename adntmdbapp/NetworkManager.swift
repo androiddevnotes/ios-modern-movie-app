@@ -3,6 +3,7 @@ import SwiftUI
 
 class NetworkManager: ObservableObject {
     @Published var movies: [Movie] = []
+    @Published var currentCategory: MovieCategory = .popular
     var currentPage = 1
     var totalPages = 1
 
@@ -18,9 +19,32 @@ class NetworkManager: ObservableObject {
     private let baseURL = Constants.API.baseURL
     private let imageBaseURL = Constants.Image.baseURL
 
-    func fetchPopularMovies() {
+    enum MovieCategory: String, CaseIterable {
+        case popular = "popular"
+        case upcoming = "upcoming"
+        case nowPlaying = "now_playing"
+        case topRated = "top_rated"
+        
+        var displayName: String {
+            switch self {
+            case .popular: return "Popular"
+            case .upcoming: return "Upcoming"
+            case .nowPlaying: return "Now Playing"
+            case .topRated: return "Top Rated"
+            }
+        }
+    }
+
+    func fetchMovies(for category: MovieCategory) {
+        currentCategory = category
+        currentPage = 1
+        movies = []
+        fetchMoviesPage()
+    }
+
+    private func fetchMoviesPage() {
         guard currentPage <= totalPages else { return }
-        guard let url = URL(string: "\(baseURL)?api_key=\(apiKey)&page=\(currentPage)") else { return }
+        guard let url = URL(string: "\(baseURL)/movie/\(currentCategory.rawValue)?api_key=\(apiKey)&page=\(currentPage)") else { return }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data {

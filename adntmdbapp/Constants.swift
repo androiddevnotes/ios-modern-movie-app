@@ -2,7 +2,7 @@ import Foundation
 
 struct Constants {
     struct API {
-        static let baseURL = "https://api.themoviedb.org/3/movie/popular"
+        static let baseURL = "https://api.themoviedb.org/3"
     }
     
     struct Image {

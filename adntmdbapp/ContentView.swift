@@ -20,6 +20,7 @@ struct ContentView: View {
 
 struct MovieListView: View {
     @ObservedObject var networkManager: NetworkManager
+    @State private var showingSortView = false
 
     var body: some View {
         NavigationView {
@@ -37,13 +38,23 @@ struct MovieListView: View {
                 if networkManager.currentPage <= networkManager.totalPages {
                     ProgressView()
                         .onAppear {
-                            networkManager.fetchPopularMovies()
+                            networkManager.fetchMovies(for: networkManager.currentCategory)
                         }
                 }
             }
-            .navigationTitle(Constants.UI.appTitle)
+            .navigationTitle(networkManager.currentCategory.displayName)
+            .navigationBarItems(trailing: Button(action: {
+                showingSortView = true
+            }) {
+                Image(systemName: "arrow.up.arrow.down")
+            })
+            .sheet(isPresented: $showingSortView) {
+                SortView(networkManager: networkManager, isPresented: $showingSortView)
+            }
             .onAppear {
-                networkManager.fetchPopularMovies()
+                if networkManager.movies.isEmpty {
+                    networkManager.fetchMovies(for: .popular)
+                }
             }
         }
     }
