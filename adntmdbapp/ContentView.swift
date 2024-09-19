@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var networkManager = NetworkManager()
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         TabView {
@@ -19,6 +20,7 @@ struct ContentView: View {
                 Label("Favorites", systemImage: "heart.fill")
             }
         }
+        .accentColor(Constants.Colors.primary)
     }
 }
 

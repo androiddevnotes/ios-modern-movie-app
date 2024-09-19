@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FavoriteView: View {
     @ObservedObject var networkManager: NetworkManager
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         List {
@@ -13,6 +14,7 @@ struct FavoriteView: View {
             .onDelete(perform: removeItems)
         }
         .navigationTitle("Favorites")
+        .background(colorScheme == .dark ? Color.black : Color.white)
     }
     
     func removeItems(at offsets: IndexSet) {

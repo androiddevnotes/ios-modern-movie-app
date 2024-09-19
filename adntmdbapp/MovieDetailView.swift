@@ -4,7 +4,8 @@ struct MovieDetailView: View {
     @ObservedObject var networkManager: NetworkManager
     @Binding var movie: Movie
     @Environment(\.presentationMode) var presentationMode
-    
+    @Environment(\.colorScheme) var colorScheme
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -54,7 +55,7 @@ struct MovieDetailView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(networkManager.isFavorite(movie) ? Color.red : Color.blue)
+                        .background(networkManager.isFavorite(movie) ? Color.red : Constants.Colors.primary)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
@@ -64,5 +65,6 @@ struct MovieDetailView: View {
             }
         }
         .edgesIgnoringSafeArea(.top)
+        .background(colorScheme == .dark ? Color.black : Color.white)
     }
 }

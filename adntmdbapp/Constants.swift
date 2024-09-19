@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 struct Constants {
     struct API {
@@ -17,5 +18,9 @@ struct Constants {
     struct UI {
         static let appTitle = "Popular Movies"
         static let placeholderImage = "placeholder"
+    }
+    
+    struct Colors {
+        static let primary = Color("PrimaryColor")
     }
 }
