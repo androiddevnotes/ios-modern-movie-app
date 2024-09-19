@@ -8,7 +8,7 @@ struct SortView: View {
   var body: some View {
     NavigationView {
       List {
-        ForEach(NetworkManager.MovieCategory.allCases, id: \.self) { category in
+        ForEach(MovieCategory.allCases, id: \.self) { category in
           Button(action: {
             networkManager.fetchMovies(for: category)
             isPresented = false
