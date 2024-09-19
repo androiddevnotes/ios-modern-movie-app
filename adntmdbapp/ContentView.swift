@@ -59,7 +59,6 @@ struct MovieListView: View {
           }
       }
     }
-    .navigationTitle(Constants.UI.appTitle)
     .navigationBarItems(
       trailing: HStack {
         Button(action: {
