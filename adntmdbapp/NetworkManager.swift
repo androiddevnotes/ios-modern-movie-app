@@ -62,4 +62,11 @@ class NetworkManager: ObservableObject {
             }
         }
     }
+
+    func toggleFavorite(for movie: Movie) {
+        if let index = movies.firstIndex(where: { $0.id == movie.id }) {
+            movies[index].isFavorite.toggle()
+            objectWillChange.send()  // Notify observers of the change
+        }
+    }
 }

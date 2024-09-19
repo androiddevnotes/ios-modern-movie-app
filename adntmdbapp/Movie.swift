@@ -5,6 +5,7 @@ struct Movie: Identifiable, Decodable, Equatable {
     let title: String
     let overview: String
     let posterPath: String?
+    var isFavorite: Bool = false  // Change this to 'var'
 
     enum CodingKeys: String, CodingKey {
         case id

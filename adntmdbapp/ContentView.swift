@@ -6,9 +6,14 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(networkManager.movies) { movie in
-                    NavigationLink(destination: MovieDetailView(movie: movie)) {
-                        MovieRowView(movie: movie)
+                ForEach($networkManager.movies) { $movie in
+                    ZStack(alignment: .leading) {
+                        NavigationLink(destination: MovieDetailView(movie: $movie, networkManager: networkManager)) {
+                            EmptyView()
+                        }
+                        .opacity(0)
+                        
+                        MovieRowView(movie: $movie, networkManager: networkManager)
                     }
                 }
                 if networkManager.currentPage <= networkManager.totalPages {
@@ -27,8 +32,8 @@ struct ContentView: View {
 }
 
 struct MovieRowView: View {
-    let movie: Movie
-    @ObservedObject private var networkManager = NetworkManager()
+    @Binding var movie: Movie
+    @ObservedObject var networkManager: NetworkManager
 
     var body: some View {
         HStack {
@@ -41,6 +46,14 @@ struct MovieRowView: View {
                     .font(.subheadline)
                     .lineLimit(3)
             }
+            Spacer()
+            Button(action: {
+                networkManager.toggleFavorite(for: movie)
+            }) {
+                Image(systemName: movie.isFavorite ? "heart.fill" : "heart")
+                    .foregroundColor(movie.isFavorite ? .red : .gray)
+            }
+            .buttonStyle(PlainButtonStyle())
         }
     }
 }

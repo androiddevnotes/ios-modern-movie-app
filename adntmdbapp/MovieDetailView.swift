@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct MovieDetailView: View {
-    let movie: Movie
+    @Binding var movie: Movie
+    @ObservedObject var networkManager: NetworkManager
 
     var body: some View {
         ScrollView {
@@ -15,9 +16,18 @@ struct MovieDetailView: View {
                         ProgressView()
                     }
                 }
-                Text(movie.title)
-                    .font(.largeTitle)
-                    .padding(.top)
+                HStack {
+                    Text(movie.title)
+                        .font(.largeTitle)
+                    Spacer()
+                    Button(action: {
+                        networkManager.toggleFavorite(for: movie)
+                    }) {
+                        Image(systemName: movie.isFavorite ? "heart.fill" : "heart")
+                            .foregroundColor(movie.isFavorite ? .red : .gray)
+                    }
+                }
+                .padding(.top)
                 Text(movie.overview)
                     .font(.body)
                     .padding(.top)
