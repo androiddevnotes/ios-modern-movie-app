@@ -41,9 +41,29 @@ struct FilterView: View {
         }
 
         Section(header: Text("Minimum Rating")) {
-          Slider(value: $minRating, in: 0...10, step: 0.5) {
-            Text("Minimum Rating: \(minRating, specifier: "%.1f")")
+          VStack(alignment: .leading, spacing: 10) {
+            HStack {
+              Text(String(format: "%.1f", minRating))
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(Constants.Colors.primary)
+              Spacer()
+              Image(systemName: "star.fill")
+                .foregroundColor(.yellow)
+            }
+            Slider(value: $minRating, in: 0...10, step: 0.5)
+              .accentColor(Constants.Colors.primary)
+            HStack {
+              Text("0")
+                .font(.caption)
+                .foregroundColor(.secondary)
+              Spacer()
+              Text("10")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
           }
+          .padding(.vertical, 8)
         }
       }
       .navigationTitle("Filter Movies")
