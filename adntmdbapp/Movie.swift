@@ -5,7 +5,7 @@ struct Movie: Identifiable, Codable {
     let title: String
     let overview: String
     let posterPath: String?
-    let rating: Double // Add this line
+    let rating: Double 
     var isFavorite: Bool
     let categoryId: String
 }
@@ -27,13 +27,13 @@ struct MovieResult: Codable {
     let title: String
     let overview: String
     let posterPath: String?
-    let voteAverage: Double // Add this line
+    let voteAverage: Double 
     
     enum CodingKeys: String, CodingKey {
         case id
         case title
         case overview
         case posterPath = "poster_path"
-        case voteAverage = "vote_average" // Add this line
+        case voteAverage = "vote_average" 
     }
 }

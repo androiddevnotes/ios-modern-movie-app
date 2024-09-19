@@ -9,7 +9,7 @@ struct MovieDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // Full-screen Poster Image
+                
                 ZStack(alignment: .bottomLeading) {
                     networkManager.posterImage(for: movie)
                         .aspectRatio(contentMode: .fill)
@@ -39,7 +39,7 @@ struct MovieDetailView: View {
                 .frame(height: UIScreen.main.bounds.height * 0.6)
                 
                 VStack(alignment: .leading, spacing: 30) {
-                    // Overview section
+                    
                     VStack(alignment: .leading, spacing: 15) {
                         Text("Overview")
                             .font(.title2)
@@ -52,11 +52,11 @@ struct MovieDetailView: View {
                     }
                     .padding(.horizontal)
                     
-                    // Additional movie details (example)
+                    
                     VStack(alignment: .leading, spacing: 15) {
-                        detailRow(title: "Release Date", value: "2023-05-15") // Replace with actual release date
-                        detailRow(title: "Genre", value: "Action, Adventure") // Replace with actual genres
-                        detailRow(title: "Director", value: "John Doe") // Replace with actual director
+                        detailRow(title: "Release Date", value: "2023-05-15") 
+                        detailRow(title: "Genre", value: "Action, Adventure") 
+                        detailRow(title: "Director", value: "John Doe") 
                     }
                     .padding(.horizontal)
                 }
@@ -64,7 +64,7 @@ struct MovieDetailView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            // Favorite button
+            
             Button(action: {
                 networkManager.toggleFavorite(for: movie)
             }) {
