@@ -9,7 +9,11 @@ struct ContentView: View {
     TabView {
       NavigationView {
         MovieListView(networkManager: networkManager)
-          .navigationBarItems(trailing: settingsButton)
+          .toolbar {
+            ToolbarItem(placement: .principal) {
+              settingsButton
+            }
+          }
       }
       .tabItem {
         Label("Movies", systemImage: "film")
@@ -17,7 +21,11 @@ struct ContentView: View {
 
       NavigationView {
         FavoriteView(networkManager: networkManager)
-          .navigationBarItems(trailing: settingsButton)
+          .toolbar {
+            ToolbarItem(placement: .principal) {
+              settingsButton
+            }
+          }
       }
       .tabItem {
         Label("Favorites", systemImage: "heart.fill")
