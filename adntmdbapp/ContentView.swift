@@ -5,13 +5,31 @@ struct ContentView: View {
   @EnvironmentObject var themeManager: ThemeManager
   @State private var showingSettings = false
 
+  // **Added** state variables for Sort and Filter sheets
+  @State private var showingSortView = false
+  @State private var showingFilterView = false
+
   var body: some View {
     TabView {
       NavigationView {
         MovieListView(networkManager: networkManager)
           .toolbar {
             ToolbarItem(placement: .principal) {
-              settingsButton
+              HStack {
+                settingsButton
+
+                Button(action: {
+                  showingSortView = true
+                }) {
+                  Image(systemName: "arrow.up.arrow.down")
+                }
+
+                Button(action: {
+                  showingFilterView = true
+                }) {
+                  Image(systemName: "line.3.horizontal.decrease.circle")
+                }
+              }
             }
           }
       }
@@ -32,8 +50,23 @@ struct ContentView: View {
       }
     }
     .accentColor(Constants.Colors.primary)
+    // **Added** Sort and Filter Sheets
     .sheet(isPresented: $showingSettings) {
       SettingsView()
+    }
+    .sheet(isPresented: $showingSortView) {
+      SortView(networkManager: networkManager, isPresented: $showingSortView)
+    }
+    .sheet(isPresented: $showingFilterView) {
+      FilterView(
+        isPresented: $showingFilterView,
+        selectedGenres: $networkManager.selectedGenres,
+        selectedYear: $networkManager.selectedYear,
+        minRating: $networkManager.minRating
+      )
+      .onDisappear {
+        networkManager.applyFilters()
+      }
     }
   }
 
@@ -44,6 +77,7 @@ struct ContentView: View {
       Image(systemName: "gearshape.fill")
     }
   }
+
 }
 
 struct MovieListView: View {
@@ -67,21 +101,7 @@ struct MovieListView: View {
           }
       }
     }
-    .navigationBarItems(
-      trailing: HStack {
-        Button(action: {
-          showingSortView = true
-        }) {
-          Image(systemName: "arrow.up.arrow.down")
-        }
 
-        Button(action: {
-          showingFilterView = true
-        }) {
-          Image(systemName: "line.3.horizontal.decrease.circle")
-        }
-      }
-    )
     .sheet(isPresented: $showingSortView) {
       SortView(networkManager: networkManager, isPresented: $showingSortView)
     }
