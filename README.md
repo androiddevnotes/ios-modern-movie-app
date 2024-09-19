@@ -98,11 +98,3 @@ The app supports localization with strings defined in `Localizable.strings`.
 ## Third-Party Libraries
 
 - Atlantis: Used for network debugging
-
-## Future Improvements
-
-- Implement pagination for movie lists
-- Add unit and UI tests
-- Enhance error handling and user feedback
-- Implement more advanced search and filtering options
-
