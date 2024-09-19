@@ -13,7 +13,7 @@ struct MovieDetailView: View {
                 ZStack(alignment: .bottomLeading) {
                     networkManager.posterImage(for: movie)
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 400)
+                        .frame(height: 300)
                         .frame(maxWidth: .infinity)
                         .clipped()
                     
@@ -35,15 +35,20 @@ struct MovieDetailView: View {
                     }
                     .padding()
                 }
-                .frame(height: 400)
+                .frame(height: 300)
                 
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 20) {
                     // Overview
-                    Text("Overview")
-                        .font(.headline)
-                    Text(movie.overview)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Overview")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        Text(movie.overview)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .lineSpacing(4)
+                    }
+                    .padding(.horizontal)
                     
                     // Favorite Button
                     Button(action: {
@@ -59,12 +64,12 @@ struct MovieDetailView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
-                    .padding(.top)
+                    .padding(.horizontal)
                 }
-                .padding()
+                .padding(.vertical, 20)
             }
         }
         .edgesIgnoringSafeArea(.top)
-        .background(colorScheme == .dark ? Color.black : Color.white)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
